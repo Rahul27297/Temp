@@ -2,51 +2,70 @@ package com.example.prodigy.travelate;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by prodigy on 11/2/18.
  */
 
-public class Preview extends ViewGroup implements SurfaceHolder.Callback
-{
+public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
-    private static final String TAG = "asasas";
-    SurfaceView mSurfaceView;
-    SurfaceHolder mHolder;
+    private static final String TAG = Preview.class.getName();
+
+    SurfaceHolder mSurfaceHolder;
     Camera mCamera;
-    Camera.Size mPreviewSize;
-    Preview(Context context, Camera mCamera){
+
+    public Preview(Context context) {
         super(context);
-        mSurfaceView = new SurfaceView(context);
-        addView(mSurfaceView);
-        this.mCamera = mCamera;
-
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
-        mHolder = mSurfaceView.getHolder();
-        mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
+        setup();
     }
+
+    public Preview(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setup();
+    }
+
+    public Preview(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setup();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public Preview(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        setup();
+    }
+
+    /**
+     * Initiates the SurfaceHolder field and installs a SurfaceHolder.Callback
+     */
+    private void setup() {
+        mSurfaceHolder = getHolder();
+        mSurfaceHolder.addCallback(this);
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        try {
-            Log.e("Travelate", "Surface Created");
-            mCamera.setPreviewDisplay(mHolder);
-            mCamera.startPreview();
-        } catch (IOException e) {
-            Log.e(TAG, "Error setting camera preview: " + e.getMessage());
+        if (mCamera == null) {
+            Log.w(TAG, "surfaceCreated: Camera Null");
+            return;
         }
 
+        try {
+            mCamera.setPreviewDisplay(mSurfaceHolder);
+            mCamera.startPreview();
+            Log.v(TAG, "surfaceCreated: Camera preview enabled");
+        } catch (IOException e) {
+            Log.e(TAG, "Error setting camera preview: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -54,7 +73,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
 
-        if (mHolder.getSurface() == null){
+        if (mSurfaceHolder.getSurface() == null) {
             // preview surface does not exist
             return;
         }
@@ -62,7 +81,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback
         // stop preview before making changes
         try {
             mCamera.stopPreview();
-        } catch (Exception e){
+        } catch (Exception e) {
             // ignore: tried to stop a non-existent preview
         }
 
@@ -71,10 +90,10 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback
 
         // start preview with new settings
         try {
-            mCamera.setPreviewDisplay(mHolder);
+            mCamera.setPreviewDisplay(mSurfaceHolder);
             mCamera.startPreview();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
@@ -99,16 +118,12 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback
         if (mCamera == camera) { return; }
 
         stopPreviewAndFreeCamera();
-
         mCamera = camera;
 
         if (mCamera != null) {
-            List<Camera.Size> localSizes = mCamera.getParameters().getSupportedPreviewSizes();
-            List<Camera.Size> mSupportedPreviewSizes = localSizes;
-            requestLayout();
-
             try {
-                mCamera.setPreviewDisplay(mHolder);
+                mCamera.setPreviewDisplay(mSurfaceHolder);
+                requestLayout();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -133,5 +148,4 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback
             mCamera = null;
         }
     }
-
 }
