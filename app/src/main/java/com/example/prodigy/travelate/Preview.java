@@ -1,6 +1,7 @@
 package com.example.prodigy.travelate;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -10,6 +11,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by prodigy on 11/2/18.
@@ -19,28 +22,47 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = Preview.class.getName();
 
-    SurfaceHolder mSurfaceHolder;
-    Camera mCamera;
+    private SurfaceHolder mSurfaceHolder;
+    private Camera mCamera;
+    private Camera.Parameters mParameters;
+    Camera.AutoFocusCallback myAutoFocusCallback = new Camera.AutoFocusCallback(){
+        @Override
+        public void onAutoFocus(boolean b, Camera camera) {
+            if(b){
+                mCamera.cancelAutoFocus();
+            }
+        }
 
-    public Preview(Context context) {
+    };
+
+    public void doTouchFocus(final Rect tfocusRect) {
+        try {
+            List<Camera.Area> focusList = new ArrayList<Camera.Area>();
+            Camera.Area focusArea = new Camera.Area(tfocusRect, 1000);
+            focusList.add(focusArea);
+
+            Camera.Parameters param = mCamera.getParameters();
+            param.setFocusAreas(focusList);
+            param.setMeteringAreas(focusList);
+            mCamera.setParameters(param);
+
+            mCamera.autoFocus(myAutoFocusCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "Unable to autofocus");
+        }
+    }
+
+
+    public Preview(Context context, Camera camera) {
         super(context);
+        mCamera = camera;
+        mCamera.setDisplayOrientation(90);
         setup();
-    }
-
-    public Preview(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setup();
-    }
-
-    public Preview(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        setup();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public Preview(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        setup();
+        mParameters = mCamera.getParameters();
+        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        mParameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+        mCamera.setParameters(mParameters);
     }
 
     /**
@@ -105,6 +127,8 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
         if (mCamera != null) {
             // Call stopPreview() to stop updating the preview surface.
             mCamera.stopPreview();
+            mCamera.release();
+            Log.d("Travelate","Camera released");
         }
 
     }
@@ -114,38 +138,4 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    public void setCamera(Camera camera) {
-        if (mCamera == camera) { return; }
-
-        stopPreviewAndFreeCamera();
-        mCamera = camera;
-
-        if (mCamera != null) {
-            try {
-                mCamera.setPreviewDisplay(mSurfaceHolder);
-                requestLayout();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // Important: Call startPreview() to start updating the preview
-            // surface. Preview must be started before you can take a picture.
-            mCamera.startPreview();
-        }
-    }
-
-    private void stopPreviewAndFreeCamera() {
-
-        if (mCamera != null) {
-            // Call stopPreview() to stop updating the preview surface.
-            mCamera.stopPreview();
-
-            // Important: Call release() to release the camera for use by other
-            // applications. Applications should release the camera immediately
-            // during onPause() and re-open() it during onResume()).
-            mCamera.release();
-
-            mCamera = null;
-        }
-    }
 }

@@ -20,17 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.example.prodigy.travelate.Preview
-            android:id="@+id/camera_preview"
+        <FrameLayout
+            android:id="@+id/camera_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"/>
 
         <Button
             android:id="@+id/button_capture"
@@ -38,8 +37,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="16dp"
-            android:text="@string/capture" />
+            android:text="@string/capture"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
