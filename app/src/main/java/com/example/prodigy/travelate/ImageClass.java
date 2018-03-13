@@ -10,10 +10,17 @@ public class ImageClass {
     @SerializedName("image")
     private String Image;
 
-    @SerializedName("response")
-    private String Response;
+    @SerializedName("monumentTitle")
+    private String monumentTitle;
 
-    public String getResponse(){
-        return Response;
+    @SerializedName("monumentInfo")
+    private String monumentInfo;
+
+    public String getMonumentTitle(){
+        return monumentTitle;
+    }
+
+    public String getMonumentInfo(){
+        return monumentInfo;
     }
 }

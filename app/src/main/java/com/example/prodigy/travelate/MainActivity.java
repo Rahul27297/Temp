@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -45,7 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean isImageShown = false;
     private int PIC_CROP = 3;
     private Uri uri;
-
+    private String monumentTitle, monumentInfo;
+    private String browserUrl;
+    private boolean isDetected = false;
+    Uri outputFileUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,15 +60,23 @@ public class MainActivity extends AppCompatActivity {
 
     ViewGroup layoutImage;
     ViewGroup layoutSwitch;
+    ViewGroup progressUpdate;
+    ViewGroup parentProgressView;
     Switch mainSwitch;
 
     Button uploadButton;
     Button cameraButton;
     Button galleryButton;
+    Button browserButton;
 
     Bitmap bitmap = null;
 
     ImageView displayImageView;
+    ImageView monumentImageView;
+
+    TextView monumentNameView;
+    TextView monumentInfoView;
+    TextView feedbackTextView;
 
     private void setupViews() {
 
@@ -73,8 +85,14 @@ public class MainActivity extends AppCompatActivity {
         layoutImage = findViewById(R.id.layout_image);
         layoutSwitch = findViewById(R.id.layout_switch);
         mainSwitch = findViewById(R.id.mainswitch);
+        parentProgressView = findViewById(R.id.ParentProgressView);
+        progressUpdate = findViewById(R.id.progressUpdate);
         layoutImage.setVisibility(View.GONE);
-        // Call Kar
+        progressUpdate.setVisibility(View.GONE);
+        parentProgressView.setVisibility(View.GONE);
+
+        feedbackTextView = findViewById(R.id.feedbackTextView);
+
         mainSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //loader here
                 AsyncUpload asyncupload = new AsyncUpload();
+                //layoutImage.setBackgroundColor(getResources().getColor(R.color.background));
+                parentProgressView.setVisibility(View.VISIBLE);
+                parentProgressView.setBackgroundColor(getResources().getColor(R.color.background));
+                progressUpdate.setVisibility(View.VISIBLE);
+                feedbackTextView.setText("Uploading Image, fetching Result");
                 asyncupload.execute();
             }
         });
@@ -129,11 +152,12 @@ public class MainActivity extends AppCompatActivity {
         Uri uri;
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK )
         {
-            uri = getCaptureImageOutputUri();
+            getCaptureImageOutputUri();
+            uri = outputFileUri;
             Log.e("Route","In imagecaputre");
-            Bundle extras = data.getExtras();
-            bitmap = (Bitmap) extras.get("data");
-            displayImageView.setImageBitmap(bitmap);
+            //Bundle extras = data.getExtras();
+            //bitmap = (Bitmap) extras.get("data");
+            //displayImageView.setImageBitmap(bitmap);
             Log.e("Travelate", "Image shown");
             isImageShown = true;
             toggleViews();
@@ -186,15 +210,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isImageShown) {
+            Log.d("Back","backpressed");
+
             isImageShown = false;
             toggleViews();
             return;
+        }
+        else if(isDetected){
+            Log.d("Back","backpressed");
+            finish();
+            startActivity(getIntent());
         }
         super.onBackPressed();
     }
 
     private void takepicture() {
+        getCaptureImageOutputUri();
         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         if (camera_intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(camera_intent, REQUEST_IMAGE_CAPTURE);
         }
@@ -225,7 +258,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {
                 ImageClass imageClass = response.body();
-                Toast.makeText(getApplicationContext(),imageClass.getResponse(),Toast.LENGTH_LONG).show();
+                monumentTitle = imageClass.getMonumentTitle();
+                monumentInfo = imageClass.getMonumentInfo();
+                setContentView(R.layout.display_monumentinfo);
+
+                isDetected = true;
+
+                monumentImageView = findViewById(R.id.monumentImageView);
+                monumentInfoView = findViewById(R.id.monumentInfoView);
+                monumentNameView = findViewById(R.id.monumentNameView);
+                browserButton = findViewById(R.id.browserOpen);
+                progressUpdate.setVisibility(View.GONE);
+                String tempname;
+
+                monumentNameView.setText(monumentTitle);
+                monumentInfoView.setText(monumentInfo);
+                monumentImageView.setImageBitmap(bitmap);
+
+                tempname = monumentTitle.replace(' ','_');
+
+                browserUrl = "https://en.wikipedia.org/wiki/" + tempname;
+
+                browserButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                        browserIntent.setData(Uri.parse(browserUrl));
+                        startActivity(browserIntent);
+                    }
+                });
+
+                //Log.e("Title",monumentTitle);
+                //Log.e("Info",monumentInfo);
+
+                //Toast.makeText(getApplicationContext(),imageClass.getMonumentTitle(),Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -235,13 +301,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
+    private void getCaptureImageOutputUri() {
+        outputFileUri = null;
         File getImage = getExternalCacheDir();
         if (getImage != null) {
             outputFileUri = Uri.fromFile(new  File(getImage.getPath(), "pickImageResult.jpeg"));
         }
-        return outputFileUri;
+        //return outputFileUri;
     }
 }
 
