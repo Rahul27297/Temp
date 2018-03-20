@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     TextView monumentNameView;
     TextView monumentInfoView;
     TextView feedbackTextView;
+    TextView displayResultTextView;
 
     private void setupViews() {
 
@@ -152,17 +153,21 @@ public class MainActivity extends AppCompatActivity {
         Uri uri;
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK )
         {
-            getCaptureImageOutputUri();
-            uri = outputFileUri;
-            Log.e("Route","In imagecaputre");
-            //Bundle extras = data.getExtras();
-            //bitmap = (Bitmap) extras.get("data");
-            //displayImageView.setImageBitmap(bitmap);
-            Log.e("Travelate", "Image shown");
-            isImageShown = true;
-            toggleViews();
-            if(option == 2)
-               CropImage.activity(uri).start(this);
+            if(option == 1) {
+                Bundle extras = data.getExtras();
+                bitmap = (Bitmap) extras.get("data");
+                displayImageView.setImageBitmap(bitmap);
+                isImageShown = true;
+                toggleViews();
+            }
+            else if(option == 2){
+                getCaptureImageOutputUri();
+                uri = outputFileUri;
+                isImageShown = true;
+                toggleViews();
+                CropImage.activity(uri).start(this);
+            }
+
         }
         else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
@@ -225,9 +230,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void takepicture() {
-        getCaptureImageOutputUri();
         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        if (option == 2){
+            getCaptureImageOutputUri();
+            camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        }
         if (camera_intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(camera_intent, REQUEST_IMAGE_CAPTURE);
         }
@@ -251,54 +258,80 @@ public class MainActivity extends AppCompatActivity {
 
     private void uploadImage(){
         final String Image = imageToString();
+        if(option == 1) {
 
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<ImageClass> call = apiInterface.uploadImage(Image);
-        call.enqueue(new Callback<ImageClass>() {
-            @Override
-            public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {
-                ImageClass imageClass = response.body();
-                monumentTitle = imageClass.getMonumentTitle();
-                monumentInfo = imageClass.getMonumentInfo();
-                setContentView(R.layout.display_monumentinfo);
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<ImageClass> call = apiInterface.uploadImage(Image);
+            call.enqueue(new Callback<ImageClass>() {
+                @Override
+                public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {
+                    ImageClass imageClass = response.body();
+                    monumentTitle = imageClass.getMonumentTitle();
+                    monumentInfo = imageClass.getMonumentInfo();
+                    setContentView(R.layout.display_monumentinfo);
 
-                isDetected = true;
+                    isDetected = true;
 
-                monumentImageView = findViewById(R.id.monumentImageView);
-                monumentInfoView = findViewById(R.id.monumentInfoView);
-                monumentNameView = findViewById(R.id.monumentNameView);
-                browserButton = findViewById(R.id.browserOpen);
-                progressUpdate.setVisibility(View.GONE);
-                String tempname;
+                    monumentImageView = findViewById(R.id.monumentImageView);
+                    monumentInfoView = findViewById(R.id.monumentInfoView);
+                    monumentNameView = findViewById(R.id.monumentNameView);
+                    browserButton = findViewById(R.id.browserOpen);
+                    progressUpdate.setVisibility(View.GONE);
+                    String tempname;
 
-                monumentNameView.setText(monumentTitle);
-                monumentInfoView.setText(monumentInfo);
-                monumentImageView.setImageBitmap(bitmap);
+                    monumentNameView.setText(monumentTitle);
+                    monumentInfoView.setText(monumentInfo);
+                    monumentImageView.setImageBitmap(bitmap);
 
-                tempname = monumentTitle.replace(' ','_');
+                    tempname = monumentTitle.replace(' ', '_');
 
-                browserUrl = "https://en.wikipedia.org/wiki/" + tempname;
+                    browserUrl = "https://en.wikipedia.org/wiki/" + tempname;
 
-                browserButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-                        browserIntent.setData(Uri.parse(browserUrl));
-                        startActivity(browserIntent);
-                    }
-                });
+                    browserButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                            browserIntent.setData(Uri.parse(browserUrl));
+                            startActivity(browserIntent);
+                        }
+                    });
 
-                //Log.e("Title",monumentTitle);
-                //Log.e("Info",monumentInfo);
+                    //Log.e("Title",monumentTitle);
+                    //Log.e("Info",monumentInfo);
 
-                //Toast.makeText(getApplicationContext(),imageClass.getMonumentTitle(),Toast.LENGTH_LONG).show();
-            }
+                    //Toast.makeText(getApplicationContext(),imageClass.getMonumentTitle(),Toast.LENGTH_LONG).show();
+                }
 
-            @Override
-            public void onFailure(Call<ImageClass> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<ImageClass> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        else if(option == 2){
+            Api2Interface api2Interface = ApiClient.getApiClient().create(Api2Interface.class);
+            Call<TranslateClass> call = api2Interface.uploadImage(Image);
+            call.enqueue(new Callback<TranslateClass>() {
+                @Override
+                public void onResponse(Call<TranslateClass> call, Response<TranslateClass> response) {
+                    TranslateClass translateClass = response.body();
+                    setContentView(R.layout.translate);
+                    displayResultTextView = findViewById(R.id.displayresulttext);
+                    displayResultTextView.setText(translateClass.getResult());
+                   //reponse for 2nd part here
+
+                    //Log.e("Title",monumentTitle);
+                    //Log.e("Info",monumentInfo);
+
+                    //Toast.makeText(getApplicationContext(),imageClass.getMonumentTitle(),Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<TranslateClass> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void getCaptureImageOutputUri() {
