@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,7 +21,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
-            android:id="@+id/monumentImageView"/>
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:id="@+id/monumentImageView"
+            android:maxHeight="300dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,11 +44,6 @@
                     android:id="@+id/monumentNameView"
                     android:textSize="28sp"
                     android:textColor="@color/black"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="View in Browser"
-                    android:id="@+id/browserOpen"/>
 
             </LinearLayout>
 
@@ -49,10 +53,31 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/monumentInfoView"
                 android:textSize="18sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:justificationMode="inter_word"
+                android:lineSpacingMultiplier="1.5"/>
 
         </LinearLayout>
     </LinearLayout>
 
     </ScrollView>
-</android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttonshape"
+        android:drawableStart="@drawable/browser"
+        android:drawableLeft="@drawable/browser"
+        android:text="Open in Browser"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="18dp"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:id="@+id/browserOpen"
+        android:textAllCaps="false"/>
+    </RelativeLayout>
+
+
+</FrameLayout>

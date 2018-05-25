@@ -4,14 +4,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by prodigy on 20/2/18.
+ * Created by prodigy on 1/4/18.
  */
 
-public class ApiClient {
-    private static final String BaseUrl = "http://35.229.21.56/module1/inception/";
+public class Api2Client {
+    private static final String BaseUrl = "http://35.229.21.56/EAST/EAST/";
     private static Retrofit retrofit;
 
-    public static Retrofit getApiClient(){
+    public static Retrofit getApi2Client(){
         if(retrofit == null){
             retrofit = new Retrofit.Builder().baseUrl(BaseUrl).addConverterFactory(GsonConverterFactory.create()).build();
         }

@@ -11,10 +11,26 @@ public class TranslateClass {
     @SerializedName("image")
     private String Image;
 
-    @SerializedName("result")
-    private String result;
+    @SerializedName("English")
+    private String English;
 
-    protected String getResult(){
-        return result;
+
+    @SerializedName("Hindi")
+    private String Hindi;
+
+
+    @SerializedName("Marathi")
+    private String Marathi;
+
+    protected String getHindi(){
+        return Hindi;
+    }
+
+    protected String getEnglish(){
+        return English;
+    }
+
+    protected String getMarathi(){
+        return Marathi;
     }
 }

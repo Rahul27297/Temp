@@ -20,26 +20,37 @@ public class Activity1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_1);
-        Context context = this.getApplicationContext();
-        //Checking network Connectivity
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activenetwork = cm.getActiveNetworkInfo();
-        boolean connectivity = (activenetwork != null && activenetwork.isConnectedOrConnecting());
+         final Context context = this.getApplicationContext();
 
-        ProgressBar spinner = (ProgressBar)findViewById(R.id.loading_spinner);
-        spinner.setVisibility(View.VISIBLE);
-        if(!connectivity){
-            //Display error message
-            spinner.setVisibility(View.GONE);
-            Toast t1 = Toast.makeText(this,"Not Connected", Toast.LENGTH_LONG);
-            t1.show();
-            this.finishAffinity();
-        }
-        else{
-            setContentView(R.layout.activity_main);
-            //Head on to the main activity
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
-        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                //Checking network Connectivity
+                ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activenetwork = cm.getActiveNetworkInfo();
+                boolean connectivity = (activenetwork != null && activenetwork.isConnectedOrConnecting());
+
+                ProgressBar spinner = (ProgressBar)findViewById(R.id.loading_spinner);
+                spinner.setVisibility(View.VISIBLE);
+                if(!connectivity){
+                    //Display error message
+                    spinner.setVisibility(View.GONE);
+                    Toast t1 = Toast.makeText(getApplicationContext(),"Not Connected", Toast.LENGTH_LONG);
+                    t1.show();
+                    finishAffinity();
+                }
+                else{
+                    //setContentView(R.layout.activity_main);
+                    //Head on to the main activity
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                    finishAffinity();
+                }
+            }
+        }, 3000);
+
+
     }
 }

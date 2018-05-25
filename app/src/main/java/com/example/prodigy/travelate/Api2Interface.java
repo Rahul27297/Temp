@@ -13,5 +13,5 @@ public interface Api2Interface {
 
     @FormUrlEncoded
     @POST("upload_2.php")
-    Call<TranslateClass> uploadImage(@Field("Image") String Image);
+    Call<TranslateClass> uploadImage(@Field("Image") String Image, @Field("Source") String Source);
 }

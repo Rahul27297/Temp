@@ -14,11 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
-        android:background="@color/white"
         android:id="@+id/progressUpdate"
         android:elevation="4dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp">
+        android:layout_marginRight="24dp"
+        android:background="@color/white">
     <ProgressBar
         android:id="@+id/indeterminateBar"
         android:layout_width="wrap_content"
@@ -28,9 +28,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/feedbackTextView"
-            android:layout_weight="5" />
+            android:layout_weight="5"
+            android:textSize="18sp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"/>
 
     </LinearLayout>
     </LinearLayout>
@@ -44,14 +47,21 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:adjustViewBounds="true" />
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Upload"
-            android:id="@+id/uploadbutton"/>
-
+            android:textSize="18sp"
+            android:paddingLeft="72dp"
+            android:paddingRight="72dp"
+            android:background="@drawable/buttonshape"
+            android:id="@+id/uploadbutton"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -59,55 +69,274 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingTop="0dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:elevation="3dp"
+            android:padding="8dp"
+            android:background="@color/white"
+            android:id="@+id/option1view">
+            <ImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/landmark"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:id="@+id/landmarkimage"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Landmark"
-            android:textAlignment="center" />
+            android:text="Landmark Recognition"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textColor="@color/pc1"
+            android:padding="0dp"
+            android:id="@+id/option1" />
 
-        <Switch
+        </LinearLayout>
+
+        <!--Switch
             android:id="@+id/mainswitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
-            android:rotation="90" />
+            android:layout_weight="2"
+            android:rotation="90"
+            android:scaleX="3"
+            android:scaleY="1"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/-->
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Signboard"
-            android:textAlignment="center" />
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:elevation="3dp"
+            android:padding="8dp"
+            android:background="@color/white"
+            android:id="@+id/option2view">
+            <ImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/signboard"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:id="@+id/signboardimage"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Signboard Translation"
+                android:textAlignment="center"
+                android:textSize="32sp"
+                android:textColor="@color/pc1"
+                android:padding="0dp"
+                android:id="@+id/option2" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@color/pc1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:paddingLeft="8sp"
+            android:paddingRight="4sp"
+            android:elevation="3dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Source Language: "
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/sourcelanguage"
+                android:textSize="18sp"
+                android:text="English"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Change"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/dpc1"
+                android:padding="0dp"
+                android:id="@+id/changesourcelanguage"/>
+        </LinearLayout>
+
+        <!--TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/lpc1"
+            android:layout_marginBottom="36dp"/-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="3dp"
+                android:padding="8dp"
+                android:background="@color/white">
 
             <Button
                 android:id="@+id/camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_gravity="center"
+                android:background="@drawable/buttonshape"
+                android:drawableStart="@drawable/cameraimage"
+                android:drawableLeft="@drawable/cameraimage"
+                android:paddingLeft="12.5dp"
+                android:elevation="3dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Camera"
+                    android:textSize="30sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/dpc1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_weight="1"
-                android:text="Camera" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="3dp"
+                android:padding="8dp"
+                android:background="@color/white">
 
             <Button
                 android:id="@+id/gallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="Gallery" />
+                android:background="@drawable/buttonshape"
+                android:drawableStart="@drawable/ic_perm_media_black_24dp"
+                android:drawableLeft="@drawable/ic_perm_media_black_24dp"
+                android:paddingLeft="12.5dp"
+                android:elevation="3dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gallery"
+                    android:textSize="30sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/dpc1"/>
+            </LinearLayout>
         </LinearLayout>
 
+    </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/selectLanguage">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:orientation="vertical"
+        android:elevation="3dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dpc1"
+            android:text="Select Source Language: "
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="English"
+                android:textSize="24sp"
+                android:textColor="@color/dpc1"
+                android:id="@+id/eradio"
+                android:layout_marginBottom="8dp"
+                android:onClick="languageSelection"
+                android:checked="true"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Marathi"
+                android:textSize="24sp"
+                android:textColor="@color/dpc1"
+                android:id="@+id/mradio"
+                android:layout_marginBottom="8dp"
+                android:onClick="languageSelection"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hindi"
+                android:textSize="24sp"
+                android:textColor="@color/dpc1"
+                android:id="@+id/hradio"
+                android:layout_marginBottom="8dp"
+                android:onClick="languageSelection"/>
+
+        </RadioGroup>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Proceed"
+            android:background="@drawable/buttonshape"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:paddingLeft="36dp"
+            android:paddingRight="36dp"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/proceedlanguagebutton"/>
+    </LinearLayout>
     </LinearLayout>
 </FrameLayout>
